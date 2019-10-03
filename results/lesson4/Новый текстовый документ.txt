@@ -1,0 +1,24 @@
+(defun reduce (funct list &key initial-value from-end &aux len)
+ 
+   (if from-end
+      (if initial-value (setq list (append list (list initial-value))))
+      (if initial-value (setq list (cons initial-value list)) nil))
+ 
+   (setq len (length list))
+ 
+   (if from-end
+ 
+      (cond ((and (null list) (null initial-value)) (funcall funct))
+            ((and (null list) (not (null initial-value))) initial-value)
+            ((and (= 1 len) (null initial-value)) (car list))
+            ((and (= 1 len) (not (null initial-value))) initial-value)
+            ((= 2 len) (funcall funct (car list) (cadr list)))
+            (t (reduce funct (append (getPart list 1 (- len 2))
+                                     (list (funcall funct (getel list (sub1 len)) (getel list len)))) :from-end t )))
+ 
+      (cond ((and (null list) (null initial-value)) (funcall funct))
+            ((and (null list) (not (null initial-value))) initial-value)
+            ((and (= 1 len) (null initial-value)) (car list))
+            ((and (= 1 len) (not (null initial-value))) initial-value)
+            ((= 2 len) (funcall funct (car list) (cadr list)))
+            (t (reduce funct (cons (funcall funct (car list) (cadr list)) (cddr list)))))))
